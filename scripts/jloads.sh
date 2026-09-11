@@ -21,5 +21,17 @@ if [ -z "$JAR" ]; then
   exit 1
 fi
 
+if [ ! -x bin/yt-dlp ] && ! command -v yt-dlp >/dev/null 2>&1; then
+  echo "[JLoads] ATENÇÃO: o yt-dlp não foi encontrado. Sem ele não dá para baixar."
+  echo "         macOS: brew install yt-dlp  ·  Linux: veja \"Instalando as dependências\" no README"
+  echo
+fi
+
+if [ ! -x bin/ffmpeg ] && ! command -v ffmpeg >/dev/null 2>&1; then
+  echo "[JLoads] ATENÇÃO: o FFmpeg não foi encontrado. Downloads em MP3 vão falhar."
+  echo "         macOS: brew install ffmpeg  ·  Ubuntu/Debian: sudo apt install ffmpeg"
+  echo
+fi
+
 echo "[JLoads] Iniciando. O navegador abre sozinho quando estiver pronto (Ctrl+C para encerrar)."
 exec "$JAVA_EXE" -jar "$JAR" --app.open-browser=true "$@"

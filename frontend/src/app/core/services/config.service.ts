@@ -10,6 +10,8 @@ export const DEFAULT_CONFIG: PublicConfig = {
   maxFileSizeBytes: 1024 * 1024 * 1024,
   maxMediaDurationSeconds: 3 * 60 * 60,
   fileRetentionMinutes: 30,
+  // Assume tudo instalado até o servidor responder, para não piscar o aviso de instalação.
+  dependencies: { ytDlp: true, ffmpeg: true, jsRuntime: true },
 };
 
 /** Limites reais do servidor; usa valores padrão até a resposta chegar (ou se ela falhar). */

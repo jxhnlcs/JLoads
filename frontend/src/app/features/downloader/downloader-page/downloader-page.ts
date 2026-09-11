@@ -8,6 +8,7 @@ import { ConfigService } from '../../../core/services/config.service';
 import { DownloadService } from '../../../core/services/download.service';
 import { Icon } from '../../../shared/components/icon/icon';
 import { LimitationsPanel } from '../../../shared/components/limitations-panel/limitations-panel';
+import { SetupBanner } from '../../../shared/components/setup-banner/setup-banner';
 import { BatchItem, BatchPanel } from '../batch-panel/batch-panel';
 import { DownloadList } from '../download-list/download-list';
 import { FormatSelection, FormatSelector } from '../format-selector/format-selector';
@@ -25,7 +26,7 @@ const BLOCKING_ERROR_CODES = new Set([
 
 @Component({
   selector: 'app-downloader-page',
-  imports: [UrlInput, VideoPreview, FormatSelector, BatchPanel, DownloadList, LimitationsPanel, Icon],
+  imports: [SetupBanner, UrlInput, VideoPreview, FormatSelector, BatchPanel, DownloadList, LimitationsPanel, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './downloader-page.html',
 })

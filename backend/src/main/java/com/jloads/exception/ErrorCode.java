@@ -52,7 +52,9 @@ public enum ErrorCode {
     RATE_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "Muitas requisições. Aguarde um momento e tente novamente."),
     SERVER_BUSY(HttpStatus.SERVICE_UNAVAILABLE, "O servidor está ocupado. Tente novamente em instantes."),
     STORAGE_FULL(HttpStatus.SERVICE_UNAVAILABLE, "O servidor está sem espaço temporário. Tente novamente mais tarde."),
-    ENGINE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "O serviço de download está indisponível no momento."),
+    ENGINE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE,
+            "O yt-dlp não foi encontrado ou não pôde ser iniciado. Instale-o seguindo o aviso no topo da página "
+                    + "e reinicie o JLoads."),
 
     NOT_FOUND(HttpStatus.NOT_FOUND, "Recurso não encontrado."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Método não suportado."),

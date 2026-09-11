@@ -93,6 +93,12 @@ export interface PublicConfig {
   maxFileSizeBytes: number;
   maxMediaDurationSeconds: number;
   fileRetentionMinutes: number;
+  /** Ferramentas externas encontradas pelo JLoads ao iniciar. */
+  dependencies: {
+    ytDlp: boolean;
+    ffmpeg: boolean;
+    jsRuntime: boolean;
+  };
 }
 
 export interface CreateDownloadResponse {

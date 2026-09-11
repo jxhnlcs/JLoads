@@ -214,6 +214,19 @@ A lista completa está em [docs/ARQUITETURA.md](docs/ARQUITETURA.md#configuraç�
 ## Solução de problemas
 
 <details>
+<summary><b>“O yt-dlp não foi encontrado” (ou “serviço de download indisponível”)</b></summary>
+
+O JLoads não encontrou o yt-dlp — a tela inicial e o terminal mostram o comando para instalar. No Windows:
+
+```powershell
+winget install yt-dlp.yt-dlp
+```
+
+Depois **feche e abra o JLoads** (o `jloads.cmd`). Sem instalar nada: crie uma pasta `bin` ao lado do `jloads.cmd`
+e coloque o `yt-dlp.exe` dentro dela.
+</details>
+
+<details>
 <summary><b>“O servidor de origem bloqueou temporariamente o acesso”</b></summary>
 
 O YouTube pediu uma verificação anti-robô para o seu IP, normalmente depois de muitas requisições seguidas. Espere

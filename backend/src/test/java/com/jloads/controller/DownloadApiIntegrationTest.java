@@ -257,7 +257,11 @@ class DownloadApiIntegrationTest {
                 .andExpect(jsonPath("$.maxBatchSize").value(5))
                 .andExpect(jsonPath("$.maxConcurrentDownloads").value(2))
                 .andExpect(jsonPath("$.fileRetentionMinutes").value(30))
-                .andExpect(jsonPath("$.maxFileSizeBytes").value(1024L * 1024 * 1024));
+                .andExpect(jsonPath("$.maxFileSizeBytes").value(1024L * 1024 * 1024))
+                // "fake-yt-dlp" não existe em disco nem no PATH: o frontend deve mostrar o aviso de instalação
+                .andExpect(jsonPath("$.dependencies.ytDlp").value(false))
+                .andExpect(jsonPath("$.dependencies.ffmpeg").isBoolean())
+                .andExpect(jsonPath("$.dependencies.jsRuntime").isBoolean());
     }
 
     private String createJob(String videoId, String type, String quality) throws Exception {
