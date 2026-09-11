@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: jloads
+  jackson:
+    default-property-inclusion: non_null
+  profiles:
+    group:
+      docker: json-logs
+
+server:
+  port: ${SERVER_PORT:8080}
+  # 127.0.0.1 = acessível só neste computador. Use 0.0.0.0 para liberar na rede (o Docker faz isso).
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  # "native" quando atrás de um proxy reverso confiável (ex.: nginx no docker-compose)
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}
+  shutdown: graceful
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-exception: false
+  tomcat:
+    threads:
+      max: ${SERVER_MAX_THREADS:100}
+    max-swallow-size: 64KB
+    max-http-form-post-size: 64KB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: ${HEALTH_SHOW_DETAILS:never}
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: false
+
+logging:
+  pattern:
+    level: "%5p [cid=%X{correlationId:-}] [job=%X{jobId:-}]"
+  level:
+    com.jloads: ${LOG_LEVEL:INFO}
+
+app:
+  # Abre o navegador quando a aplicação estiver pronta (os scripts do pacote ativam isso).
+  open-browser: ${OPEN_BROWSER:false}
+
+  ytdlp:
+    # Se o caminho não existir, o yt-dlp é procurado no PATH.
+    executable: ${YTDLP_EXECUTABLE:./bin/yt-dlp}
+    # Runtime JavaScript usado pelo yt-dlp no YouTube: deno, node, quickjs ou bun.
+    # Aceita "runtime" ou "runtime:caminho". Vazio = detecta automaticamente (Deno; se não houver, Node).
+    js-runtime: ${YTDLP_JS_RUNTIME:}
+    metadata-timeout: ${YTDLP_METADATA_TIMEOUT:60s}
+    socket-timeout-seconds: ${YTDLP_SOCKET_TIMEOUT:30}
+    retries: ${YTDLP_RETRIES:3}
+    max-concurrent-analysis: ${MAX_CONCURRENT_ANALYSIS:4}
+    analysis-cache-ttl: ${ANALYSIS_CACHE_TTL:10m}
+
+  ffmpeg:
+    executable: ${FFMPEG_EXECUTABLE:./bin/ffmpeg}
+
+  downloads:
+    directory: ${DOWNLOAD_DIRECTORY:./storage}
+    max-concurrent: ${MAX_CONCURRENT_DOWNLOADS:3}
+    max-queue-size: ${MAX_QUEUE_SIZE:50}
+    max-active-jobs-per-client: ${MAX_ACTIVE_JOBS_PER_CLIENT:5}
+    # Quantidade máxima de links enviados de uma só vez
+    max-batch-size: ${MAX_BATCH_SIZE:5}
+    max-file-size: ${MAX_FILE_SIZE:1GB}
+    max-storage-size: ${MAX_STORAGE_SIZE:10GB}
+    timeout: ${DOWNLOAD_TIMEOUT:30m}
+    max-media-duration: ${MAX_MEDIA_DURATION:3h}
+    # Limite opcional de banda por download (ex.: 5M). Vazio = sem limite.
+    limit-rate: ${DOWNLOAD_LIMIT_RATE:}
+
+  cleanup:
+    enabled: ${CLEANUP_ENABLED:true}
+    max-age-minutes: ${CLEANUP_MAX_AGE:30}
+    job-retention-minutes: ${JOB_RETENTION_MINUTES:120}
+    interval: ${CLEANUP_INTERVAL:5m}
+
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+    api-requests-per-minute: ${RATE_LIMIT_API:120}
+    analyze-requests-per-minute: ${RATE_LIMIT_ANALYZE:20}
+    download-requests-per-minute: ${RATE_LIMIT_DOWNLOADS:10}
+
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}

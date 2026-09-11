@@ -1,0 +1,107 @@
+@let j = job();
+@let p = presentation();
+@let save = saveStatus();
+<article class="card job" [class]="'job--' + p.tone" [attr.aria-label]="title() + ' — ' + p.label">
+  <div class="job__main">
+    <div class="job__status-icon" [class]="'tone--' + p.tone">
+      <app-icon [name]="p.icon" [size]="20" />
+    </div>
+
+    <div class="job__info">
+      <h3 class="job__title" [title]="title()">{{ title() }}</h3>
+      <p class="job__meta">
+        <app-icon [name]="typeIcon()" [size]="14" />
+        <span>{{ qualityLabel() }}</span>
+        @if (j.channel) {
+          <span class="job__dot" aria-hidden="true">•</span><span class="job__channel">{{ j.channel }}</span>
+        }
+      </p>
+    </div>
+
+    <span class="badge" [class]="'tone--' + p.tone">{{ p.label }}</span>
+  </div>
+
+  @if (showProgress()) {
+    <div class="progress" [class.progress--indeterminate]="indeterminate()" role="progressbar"
+         [attr.aria-valuenow]="indeterminate() ? null : j.progress" aria-valuemin="0" aria-valuemax="100"
+         [attr.aria-label]="p.label">
+      <div class="progress__bar" [style.width.%]="indeterminate() ? null : j.progress"></div>
+    </div>
+    <div class="job__stats" aria-live="off">
+      @switch (j.status) {
+        @case ('DOWNLOADING') {
+          <span class="job__stat job__stat--strong">{{ j.progress }}%</span>
+          <span class="job__stat">{{ j.downloadedBytes | bytes }} / {{ j.totalBytes | bytes }}</span>
+          <span class="job__stat">{{ j.speed || '—' }}</span>
+          <span class="job__stat">{{ j.eta ? 'restam ' + j.eta : '' }}</span>
+        }
+        @default {
+          <span class="job__stat">{{ p.hint }}</span>
+        }
+      }
+    </div>
+  }
+
+  @if (j.status === 'COMPLETED') {
+    <p class="job__message">
+      @if (j.fileAvailable) {
+        {{ j.filename }} · {{ j.fileSizeBytes | bytes }}
+      } @else {
+        O arquivo expirou e foi removido do servidor.
+      }
+    </p>
+    @if (j.fileAvailable && save) {
+      @switch (save.state) {
+        @case ('saving') {
+          <p class="job__save"><app-icon name="spinner" [size]="16" /> Salvando em “{{ folderName() }}”…</p>
+        }
+        @case ('saved') {
+          <p class="job__save job__save--saved">
+            <app-icon name="check" [size]="16" />
+            @if (save.target === 'folder') {
+              Salvo em “{{ folderName() ?? 'pasta escolhida' }}”{{ save.filename && save.filename !== j.filename ? ' como ' + save.filename : '' }}
+            } @else {
+              Enviado para a pasta de downloads do navegador
+            }
+          </p>
+        }
+        @case ('permission') {
+          <p class="job__save job__save--problem"><app-icon name="alert" [size]="16" /> Autorize o acesso à pasta para salvar este arquivo.</p>
+        }
+        @case ('error') {
+          <p class="job__save job__save--problem"><app-icon name="alert" [size]="16" /> Não foi possível salvar na pasta escolhida.</p>
+        }
+      }
+    }
+  }
+  @if (j.status === 'FAILED') {
+    <p class="job__message job__message--danger" role="alert">{{ j.errorMessage || p.hint }}</p>
+  }
+
+  <div class="job__actions">
+    @if (!terminal()) {
+      <button type="button" class="btn btn--secondary" (click)="cancel.emit()" [disabled]="cancelling()">
+        @if (cancelling()) { <app-icon name="spinner" [size]="16" /> Cancelando… } @else { Cancelar }
+      </button>
+    } @else {
+      <button type="button" class="btn btn--ghost" (click)="dismiss.emit()" title="Remover da lista">
+        <app-icon name="trash" [size]="16" /> Remover
+      </button>
+      @if (j.status === 'FAILED' || j.status === 'CANCELLED' || (j.status === 'COMPLETED' && !j.fileAvailable)) {
+        <button type="button" class="btn btn--secondary" (click)="retry.emit()">
+          <app-icon name="retry" [size]="16" /> Tentar novamente
+        </button>
+      }
+      @if (j.status === 'COMPLETED' && j.fileAvailable) {
+        @if (canSaveToFolder()) {
+          <button type="button" class="btn btn--secondary" (click)="saveToFolder.emit()">
+            <app-icon name="folder" [size]="16" /> {{ saveButtonLabel() }}
+          </button>
+        }
+        <a class="btn btn--primary" [href]="fileUrl()" download>
+          <app-icon name="download" [size]="16" /> Baixar arquivo
+        </a>
+      }
+    }
+  </div>
+</article>

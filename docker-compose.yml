@@ -1,0 +1,77 @@
+name: jloads
+
+services:
+  # Ajusta a permissão do volume montado para o usuário não-root do backend (uid 10001).
+  storage-init:
+    image: busybox:1.37
+    command: ["sh", "-c", "mkdir -p /app/storage && chown -R 10001:10001 /app/storage"]
+    volumes:
+      - ./storage:/app/storage
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        YTDLP_VERSION: ${YTDLP_VERSION:-2026.08.19}
+    depends_on:
+      storage-init:
+        condition: service_completed_successfully
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_ADDRESS: 0.0.0.0
+      FORWARD_HEADERS_STRATEGY: native
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_ORIGIN:-http://localhost:8081}
+      YTDLP_EXECUTABLE: /usr/local/bin/yt-dlp
+      YTDLP_JS_RUNTIME: ${YTDLP_JS_RUNTIME:-deno}
+      FFMPEG_EXECUTABLE: /usr/bin/ffmpeg
+      DOWNLOAD_DIRECTORY: /app/storage
+      MAX_CONCURRENT_DOWNLOADS: ${MAX_CONCURRENT_DOWNLOADS:-3}
+      MAX_QUEUE_SIZE: ${MAX_QUEUE_SIZE:-50}
+      MAX_ACTIVE_JOBS_PER_CLIENT: ${MAX_ACTIVE_JOBS_PER_CLIENT:-5}
+      MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-5}
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE:-1GB}
+      MAX_STORAGE_SIZE: ${MAX_STORAGE_SIZE:-10GB}
+      MAX_MEDIA_DURATION: ${MAX_MEDIA_DURATION:-3h}
+      DOWNLOAD_TIMEOUT: ${DOWNLOAD_TIMEOUT:-30m}
+      DOWNLOAD_LIMIT_RATE: ${DOWNLOAD_LIMIT_RATE:-}
+      CLEANUP_ENABLED: ${CLEANUP_ENABLED:-true}
+      CLEANUP_MAX_AGE: ${CLEANUP_MAX_AGE:-30}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+      RATE_LIMIT_API: ${RATE_LIMIT_API:-120}
+      RATE_LIMIT_ANALYZE: ${RATE_LIMIT_ANALYZE:-20}
+      RATE_LIMIT_DOWNLOADS: ${RATE_LIMIT_DOWNLOADS:-10}
+      JAVA_OPTS: ${JAVA_OPTS:--XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError}
+    volumes:
+      - ./storage:/app/storage
+    expose:
+      - "8080"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "${BACKEND_CPUS:-2}"
+          memory: ${BACKEND_MEMORY:-1536M}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-8081}:8080"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+    restart: unless-stopped

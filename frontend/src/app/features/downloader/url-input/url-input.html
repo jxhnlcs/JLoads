@@ -1,0 +1,58 @@
+<form class="url-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <label class="sr-only" for="video-urls">Links do YouTube (um por linha)</label>
+  <div class="url-field url-field--multiline"
+       [class.url-field--invalid]="(linksControl.invalid && linksControl.touched) || serverError()">
+    <app-icon name="link" class="url-field__icon" />
+    <textarea
+      #textarea
+      id="video-urls"
+      class="url-field__textarea"
+      rows="1"
+      autocomplete="off"
+      spellcheck="false"
+      [attr.placeholder]="'Cole um link do YouTube… (ou até ' + maxLinks() + ', um por linha)'"
+      formControlName="links"
+      (input)="autosize()"
+      (keydown.enter)="onEnter($event)"
+      [attr.aria-invalid]="linksControl.invalid && linksControl.touched"
+      aria-describedby="video-urls-feedback"
+    ></textarea>
+    @if (clipboardSupported) {
+      <button type="button" class="btn btn--ghost btn--icon url-field__paste" (click)="pasteFromClipboard()"
+              [disabled]="busy()" title="Colar da área de transferência" aria-label="Colar da área de transferência">
+        <app-icon name="clipboard" [size]="18" />
+      </button>
+    }
+  </div>
+
+  <div class="url-form__meta">
+    <p id="video-urls-feedback" class="field-feedback" aria-live="polite">
+      @if (linksControl.touched && linksControl.hasError('required')) {
+        Informe ao menos um link.
+      } @else if (linksControl.hasError('tooMany')) {
+        Você pode enviar no máximo {{ maxLinks() }} links por vez.
+      } @else if (linksControl.touched && linksControl.hasError('invalidLink')) {
+        O link {{ linksControl.getError('invalidLink').position }} não é do YouTube (youtube.com ou youtu.be).
+      } @else if (serverError()) {
+        <span class="field-feedback__error">{{ serverError() }}</span>
+      }
+    </p>
+    @if (links().length > 0) {
+      <span class="link-counter" [class.link-counter--over]="links().length > maxLinks()">
+        {{ links().length }}/{{ maxLinks() }} links
+      </span>
+    } @else {
+      <span class="link-counter">Shift+Enter para nova linha</span>
+    }
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--lg url-form__submit" [disabled]="busy()">
+    @if (busy()) {
+      <app-icon name="spinner" [size]="18" />
+      Aguarde…
+    } @else {
+      <app-icon [name]="links().length > 1 ? 'list' : 'search'" [size]="18" />
+      {{ submitLabel() }}
+    }
+  </button>
+</form>

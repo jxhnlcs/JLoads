@@ -1,0 +1,16 @@
+package com.jloads.support;
+
+import com.jloads.process.ProcessLauncher;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+
+@TestConfiguration(proxyBeanMethods = false)
+public class FakeEngineTestConfig {
+
+    @Bean
+    @Primary
+    ProcessLauncher fakeYtDlpProcessLauncher() {
+        return new FakeYtDlpProcessLauncher();
+    }
+}

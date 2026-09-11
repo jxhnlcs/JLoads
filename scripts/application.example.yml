@@ -1,0 +1,34 @@
+# Configuração opcional do JLoads.
+# Renomeie para "application.yml" (dentro da pasta config/, ao lado do jar) e ajuste o que precisar.
+# Tudo aqui também pode ser definido por variável de ambiente (ver README).
+
+server:
+  # Porta da interface: http://localhost:8080
+  port: 8080
+  # 127.0.0.1 = só este computador (recomendado).
+  # 0.0.0.0 = outros aparelhos da sua rede também acessam (ex.: celular). Não há login: use com cuidado.
+  address: 127.0.0.1
+
+app:
+  ytdlp:
+    # Caminho do yt-dlp. Se não existir, o JLoads procura "yt-dlp" no PATH.
+    executable: ./bin/yt-dlp
+    # Runtime JavaScript exigido pelo YouTube: deno, node, quickjs ou bun.
+    # Vazio = detecta automaticamente (Deno, depois Node).
+    js-runtime: ""
+
+  ffmpeg:
+    # Caminho do FFmpeg. Se não existir, o JLoads procura "ffmpeg" no PATH.
+    executable: ./bin/ffmpeg
+
+  downloads:
+    # Onde os arquivos ficam enquanto são baixados e até serem salvos.
+    directory: ./storage
+    max-concurrent: 3
+    max-batch-size: 5
+    max-file-size: 2GB
+    max-media-duration: 4h
+
+  cleanup:
+    # Minutos que um arquivo concluído fica disponível para "Baixar arquivo".
+    max-age-minutes: 60

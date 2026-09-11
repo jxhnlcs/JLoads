@@ -1,0 +1,31 @@
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a routerLink="/" class="brand" aria-label="JLoads — início">
+      <span class="brand__mark"><app-icon name="download" [size]="18" /></span>
+      <span class="brand__name">JLoads</span>
+    </a>
+
+    <nav class="topbar__nav" aria-label="Navegação principal">
+      <span class="connection" [class.connection--open]="socket.state() === 'open'"
+            [attr.title]="socket.state() === 'open' ? 'Atualizações em tempo real ativas' : 'Reconectando…'">
+        <span class="connection__dot" aria-hidden="true"></span>
+        <span class="connection__label">{{ socket.state() === 'open' ? 'Ao vivo' : 'Reconectando' }}</span>
+      </span>
+      <a routerLink="/settings" routerLinkActive="nav-link--active" class="nav-link" aria-label="Preferências">
+        <app-icon name="settings" [size]="18" /><span class="nav-link__label">Preferências</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="container main">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="container">
+    JLoads · Use apenas com conteúdo que você tem direito de baixar. Respeite os direitos autorais e os termos da plataforma.
+  </div>
+</footer>

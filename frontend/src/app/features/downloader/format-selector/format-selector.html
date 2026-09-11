@@ -1,0 +1,41 @@
+<form class="format-form" [formGroup]="form" (ngSubmit)="submit()">
+  <fieldset class="field">
+    <legend class="field__label">Tipo</legend>
+    <div class="segmented" role="radiogroup" aria-label="Tipo de download">
+      <button type="button" role="radio" class="segmented__option"
+              [class.segmented__option--active]="form.controls.type.value === 'AUDIO'"
+              [attr.aria-checked]="form.controls.type.value === 'AUDIO'"
+              [disabled]="!hasAudio() || busy()" (click)="selectType('AUDIO')">
+        <app-icon name="music" [size]="18" /> Áudio
+      </button>
+      <button type="button" role="radio" class="segmented__option"
+              [class.segmented__option--active]="form.controls.type.value === 'VIDEO'"
+              [attr.aria-checked]="form.controls.type.value === 'VIDEO'"
+              [disabled]="!hasVideo() || busy()" (click)="selectType('VIDEO')">
+        <app-icon name="video" [size]="18" /> Vídeo
+      </button>
+    </div>
+  </fieldset>
+
+  <div class="field">
+    <label class="field__label" for="quality">Qualidade</label>
+    <div class="select">
+      <select id="quality" class="select__control" formControlName="quality">
+        @for (option of qualityOptions(); track option.quality) {
+          <option [value]="option.quality">{{ option.label }} — {{ option.description }}</option>
+        }
+      </select>
+    </div>
+    @if (selectedOption()?.estimatedSizeBytes; as size) {
+      <p class="field__hint">Tamanho estimado: ~{{ size | bytes }}</p>
+    }
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--lg format-form__submit" [disabled]="busy() || !selectedOption()">
+    @if (busy()) {
+      <app-icon name="spinner" [size]="18" /> Adicionando…
+    } @else {
+      <app-icon name="download" [size]="18" /> {{ submitLabel() }}
+    }
+  </button>
+</form>

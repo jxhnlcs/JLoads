@@ -1,0 +1,11 @@
+# Configuração e dados locais
+.env
+storage/
+dist/
+*.log
+
+# Editores e sistema
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db

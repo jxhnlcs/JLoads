@@ -1,0 +1,55 @@
+<section class="hero" [class.hero--compact]="state() === 'READY' || state() === 'BATCH'">
+  <h1 class="hero__title">JLoads</h1>
+  <p class="hero__subtitle">Baixe conteúdo autorizado facilmente — um link ou vários de uma vez</p>
+
+  <app-url-input class="hero__form" [busy]="state() === 'ANALYZING' || submitting()" [serverError]="analyzeError()"
+                 [maxLinks]="config().maxBatchSize" (analyze)="onAnalyze($event)" (batch)="onBatch($event)" />
+</section>
+
+@if (state() === 'ANALYZING') {
+  <div class="card preview preview--loading" aria-busy="true" aria-live="polite">
+    <div class="preview__media"><div class="preview__thumb skeleton-block"></div></div>
+    <div class="preview__body">
+      <div class="skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton-line skeleton-line--sm"></div>
+      <p class="muted">Analisando o conteúdo…</p>
+    </div>
+  </div>
+}
+
+@if (analysis(); as current) {
+  <app-video-preview [analysis]="current" (dismiss)="reset()">
+    <app-format-selector [options]="current.availableOptions" [busy]="submitting()" (download)="onDownload($event)" />
+    @if (downloadError()) {
+      <div class="alert alert--danger" role="alert">
+        <app-icon name="alert" [size]="18" /><span>{{ downloadError() }}</span>
+      </div>
+    }
+  </app-video-preview>
+}
+
+@if (state() === 'BATCH') {
+  <app-batch-panel [items]="batchItems()" [busy]="submitting()" (download)="onBatchDownload($event)"
+                   (remove)="removeBatchUrl($event)" (dismiss)="reset()">
+    @if (downloadError()) {
+      <div class="alert alert--danger" role="alert">
+        <app-icon name="alert" [size]="18" /><span>{{ downloadError() }}</span>
+      </div>
+    }
+  </app-batch-panel>
+}
+
+@if (notice()) {
+  <div class="alert alert--success" role="status">
+    <app-icon name="check" [size]="18" /><span>{{ notice() }}</span>
+    <button type="button" class="btn btn--ghost btn--icon" aria-label="Fechar aviso" (click)="notice.set(null)">
+      <app-icon name="x" [size]="16" />
+    </button>
+  </div>
+}
+
+<div #downloadsSection class="scroll-anchor">
+  <app-download-list (retry)="onRetry($event)" />
+</div>
+
+<app-limitations-panel />
