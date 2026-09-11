@@ -34,7 +34,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<!-- Versão do JLoads. Releases sobrescrevem com -Drevision=X.Y.Z -->
-		<revision>1.0.0</revision>	</properties>
+		<revision>1.0.1</revision>	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

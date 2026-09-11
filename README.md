@@ -9,6 +9,8 @@ Cole um ou vários links, acompanhe o progresso em tempo real e salve direto na 
 [![Release](https://img.shields.io/github/v/release/jxhnlcs/JLoads?label=vers%C3%A3o)](https://github.com/jxhnlcs/JLoads/releases)
 [![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-7c6cff)](LICENSE)
 
+<img src="imagens/demo.gif" alt="Demonstração do JLoads: colar um link, analisar, baixar em MP3 e acompanhar o progresso até concluir" width="860">
+
 </div>
 
 > **Uso responsável.** Baixe apenas conteúdo que você tem direito de baixar: seus próprios vídeos, conteúdo em
@@ -177,6 +179,12 @@ O resultado fica em `dist/`.
 2. **Escolha** Áudio ou Vídeo e a qualidade.
 3. Clique em **Baixar**. O download entra na fila e o progresso aparece em **Downloads**.
 4. Quando terminar, clique em **Baixar arquivo** — ou deixe o salvamento automático fazer isso.
+
+| 1. Analisar o link | 2. Baixando |
+|---|---|
+| <img src="imagens/analise.png" alt="Tela de análise com capa, título, canal, duração e escolha de formato" width="420"> | <img src="imagens/baixando.png" alt="Download na fila com barra de progresso" width="420"> |
+| **3. Processando** | **4. Concluído** |
+| <img src="imagens/processando.png" alt="Arquivo sendo convertido para MP3" width="420"> | <img src="imagens/concluido.png" alt="Download concluído com o botão Baixar arquivo" width="420"> |
 
 **Salvar automaticamente numa pasta:** abra **Preferências → Salvar downloads → Escolher pasta**. A partir daí,
 cada download concluído é gravado nessa pasta, sem sobrescrever arquivos com o mesmo nome.
